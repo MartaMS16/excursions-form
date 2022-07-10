@@ -2,12 +2,14 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     const inputField = document.querySelector('.uploader__input');
+
     if (inputField) {
         inputField.addEventListener(
             'change',
             previewFileContent
         );
     };
+    addToOrder();
 };
 
 function previewFileContent() {
@@ -46,10 +48,55 @@ function renderExcursion(container, excursion) {
     const priceForAdult = excursionsPrice.querySelectorAll('span')[0];
     const priceForChild = excursionsPrice.querySelectorAll('span')[1];
     li.classList.remove('excursions__item--prototype');
+    priceForAdult.classList.add('excursions__price--adult');
+    priceForChild.classList.add('excursions__price--child');
     excursionTitle.innerText = excursion[1];
     excursionDescription.innerText = excursion[2];
     priceForAdult.innerText = excursion[3] + ' ';
     priceForChild.innerText = excursion[4] + ' ';
 
     container.appendChild(li);
+};
+
+function renderBasket(excursion) {
+    const basket = document.querySelector('.summary');
+    const basketItemPrototype = document.querySelector('.summary__item--prototype');
+    const basketItem = basketItemPrototype.cloneNode(true);
+    basketItem.classList.remove('summary__item--prototype');
+    const basketItemName = basketItem.querySelector('.summary__name');
+    const basketItemSummaryTotalPrice = basketItem.querySelector('.summary__total-price');
+    const basketItemSummaryPrices = basketItem.querySelector('.summary__prices');
+    const numberOfAdults = excursion.firstElementChild.lastElementChild.lastElementChild.value;
+    const numberOfChildren = excursion.children.value;
+    const priceForAdults = excursion.firstElementChild.firstElementChild.firstElementChild.innerText;
+    const priceForChildren = excursion.children.previousElementSibling.innerText;
+    const totalPriceForAdults = numberOfAdults * priceForAdults;
+    const totalPriceForChildren = numberOfChildren * priceForChildren;
+    const totalPrice = totalPriceForAdults + totalPriceForChildren;
+
+    basketItemName.innerText = excursion.previousElementSibling.firstElementChild.innerText;
+    basketItemSummaryTotalPrice.innerText = totalPrice + ' PLN';
+    basketItemSummaryPrices.innerText = 'dorośli: ' + numberOfAdults + ' x ' + totalPriceForAdults + ' PLN, dzieci: ' + numberOfChildren + ' x ' + totalPriceForChildren + ' PLN';
+
+    basket.appendChild(basketItem);
+};
+
+function getANumberOfAdults() {
+    return adults = document.querySelector('input[name=adults]').value;
+};
+
+function getANumberOfChildren() {
+    return children = document.querySelector('input[name=children]').value;
+};
+
+function addToOrder() {
+    const panelExcursions = document.querySelector('.panel__excursions');
+    panelExcursions.addEventListener(
+        'submit',
+        function (e) {
+            e.preventDefault();
+            const target = e.target;
+            renderBasket(target);
+        }
+    );
 };
