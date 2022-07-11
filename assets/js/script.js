@@ -47,8 +47,14 @@ function renderExcursion(container, excursion) {
     const excursionTitle = li.querySelector('.excursions__title');
     const excursionDescription = li.querySelector('.excursions__description');
     const excursionsPrice = li.querySelector('.excursions__form');
+    const excursionsFieldInput = li.querySelectorAll('.excursions__field-input');
     const priceForAdult = excursionsPrice.querySelectorAll('span')[0];
     const priceForChild = excursionsPrice.querySelectorAll('span')[1];
+    const errorMessagesContainer = document.createElement('div');
+    const errorMessages = document.createElement('ul');
+    errorMessages.className = 'errors';
+    li.appendChild(errorMessagesContainer);
+    errorMessagesContainer.appendChild(errorMessages);
     li.classList.remove('excursions__item--prototype');
     priceForAdult.classList.add('excursions__price--adult');
     priceForChild.classList.add('excursions__price--child');
@@ -57,10 +63,16 @@ function renderExcursion(container, excursion) {
     priceForAdult.innerText = excursion[3] + ' ';
     priceForChild.innerText = excursion[4] + ' ';
 
+    excursionsFieldInput.forEach(function (excursion) {
+        if (excursion.classList != 'excursions__field-input excursions__field-input--submit') {
+            excursion.setAttribute('type', 'number');
+        };
+    });
+
     container.appendChild(li);
 };
 
-function renderBasket(excursion) {
+function renderBasket(form) {
     const basket = document.querySelector('.summary');
     const basketItemPrototype = document.querySelector('.summary__item--prototype');
     const basketItem = basketItemPrototype.cloneNode(true);
@@ -68,21 +80,46 @@ function renderBasket(excursion) {
     const basketItemName = basketItem.querySelector('.summary__name');
     const basketItemSummaryTotalPrice = basketItem.querySelector('.summary__total-price');
     const basketItemSummaryPrices = basketItem.querySelector('.summary__prices');
-    const totalPriceItem = document.querySelector('.order__total-price-value');
-    const numberOfAdults = excursion.querySelector('input[name=adults]').value;
-    const numberOfChildren = excursion.querySelector('input[name=children]').value;
-    const priceForAdults = excursion.firstElementChild.firstElementChild.firstElementChild.innerText;
-    const priceForChildren = excursion.children.previousElementSibling.innerText;
+    let numberOfAdults = form.querySelector('input[name=adults]').value;
+    let numberOfChildren = form.querySelector('input[name=children]').value;
+    const priceForAdults = form.firstElementChild.firstElementChild.firstElementChild.innerText;
+    const priceForChildren = form.children.previousElementSibling.innerText;
     const totalPriceForAdults = numberOfAdults * priceForAdults;
     const totalPriceForChildren = numberOfChildren * priceForChildren;
     const totalPrice = totalPriceForAdults + totalPriceForChildren;
 
-    basketItemName.innerText = excursion.previousElementSibling.firstElementChild.innerText;
+    if (numberOfAdults === '') {
+        numberOfAdults = 0;
+    };
+    if (numberOfChildren === '') {
+        numberOfChildren = 0;
+    };
+
+    basketItemName.innerText = form.previousElementSibling.firstElementChild.innerText;
     basketItemSummaryTotalPrice.innerText = totalPrice + ' PLN';
-    totalPriceItem.innerText = totalPrice + ' PLN';
     basketItemSummaryPrices.innerText = 'dorośli: ' + numberOfAdults + ' x ' + totalPriceForAdults + ' PLN, dzieci: ' + numberOfChildren + ' x ' + totalPriceForChildren + ' PLN';
 
     basket.appendChild(basketItem);
+};
+
+function renderTotalBasketPrice() {
+    const totalPriceItem = document.querySelector('.order__total-price-value');
+    const excursionsPrices = document.querySelectorAll('.summary__total-price');
+    const prices = [];
+    let totalBasketPrice = 0;
+    excursionsPrices.forEach(function (el) {
+        if (el.parentElement.parentElement.className != 'summary__item summary__item--prototype') {
+            const price = Number(el.innerText.slice(0, -4));
+            prices.push(price);
+            console.log(prices);
+        };
+    });
+
+    for (let i = 0; i < prices.length; i++) {
+        totalBasketPrice += prices[i];
+    };
+
+    totalPriceItem.innerText = totalBasketPrice + ' PLN';
 };
 
 function getANumberOfAdults() {
@@ -100,8 +137,14 @@ function addToOrder() {
         function (e) {
             e.preventDefault();
             const target = e.target;
-            renderBasket(target);
-            clearExcursionForm(target);
+            const errors = target.parentElement.querySelector('.errors');
+            clearErrorMessages(errors);
+            validate(target);
+            if (errors.children.length < 1) {
+                renderBasket(target);
+                renderTotalBasketPrice();
+                clearExcursionForm(target);
+            };
         }
     );
 };
@@ -109,4 +152,25 @@ function addToOrder() {
 function clearExcursionForm(excursion) {
     excursion.querySelector('input[name=adults]').value = '';
     excursion.querySelector('input[name=children]').value = '';
+};
+
+function validate(form) {
+    const numberOfAdults = Number(form.querySelector('input[name=adults]'));
+    const numberOfChildren = Number(form.querySelector('input[name=children]'));
+    const excursion = form.parentElement;
+    const errorMessages = document.querySelector('.errors');
+
+    if (numberOfAdults.value < 0) {
+        const errorMessage = document.createElement('li');
+        errorMessages.appendChild(errorMessage);
+        errorMessage.innerText = 'Liczba osób dorosłych jest nieprawidłowa!';
+    } else if (Number.isNaN(numberOfAdults)) {
+        numberOfAdults.value = 0;
+    };
+};
+
+function clearErrorMessages(errors) {
+    while (errors.firstChild) {
+        errors.removeChild(errors.firstChild);
+    };
 };
