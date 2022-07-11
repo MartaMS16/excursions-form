@@ -203,16 +203,29 @@ function order() {
             const errors = target.querySelector('.errors');
             const totalPrice = target.querySelector('.order__total-price-value').innerText;
             const email = target.querySelector('input[name=email]').value;
+            const panelSummary = document.querySelector('.panel__summary ');
+            const totalPriceItem = document.querySelector('.order__total-price-value');
 
             clearErrorMessages(errors);
             validateDataBeforeOrdering();
-            if (errors.children.length < 1) {
+
+            if (Array.from(panelSummary.children).length < 2) {
+                console.log(Array.from(panelSummary.children));
+                console.log(Array.from(panelSummary.children).length < 2);
+                alert('Nie wybrano wycieczek!');
+            } else if (errors.children.length < 1 && totalPriceItem.innerText !== '0 PLN') {
                 alert('Dziękujemy za złożenie zamówienia o wartości ' + totalPrice + '. Szczegóły zamówienia zostały wysłane na adres e-mail: ' + email + '.');
                 clearOrderForm(target);
                 clearExcursionPanel();
                 clearExcursionFromBasket();
-                const totalPriceItem = document.querySelector('.order__total-price-value');
                 totalPriceItem.innerText = '0 PLN'
+                const file = document.querySelector('input[type=file]')
+                file.value = '';
+            } else if (totalPriceItem.innerText === '0 PLN') {
+                alert('Wartość wybranych wycieczek wynosi 0 PLN!');
+            } else {
+                clearErrorMessages(errors);
+                validateDataBeforeOrdering();
             };
         }
     );
@@ -229,22 +242,22 @@ function validateDataBeforeOrdering() {
 
     if (name.value === '') {
         const errorEmptyNameField = document.createElement('li');
-        errors.appendChild(errorEmptyNameField);
         errorEmptyNameField.innerText = 'Nie wypełniono pola "Imię i nazwisko"!';
+        errors.appendChild(errorEmptyNameField);
     } else if (!reg1.test(name.value)) {
         const nameErrorMessage = document.createElement('li');
-        errors.appendChild(nameErrorMessage);
         nameErrorMessage.innerText = 'Podano błędne dane w polu "Imię i nazwisko"!';
+        errors.appendChild(nameErrorMessage);
     };
 
     if (email.value === '') {
         const errorEmptyEmailField = document.createElement('li');
-        errors.appendChild(errorEmptyEmailField);
         errorEmptyEmailField.innerText = 'Nie wypełniono pola "Email"!';
+        errors.appendChild(errorEmptyEmailField);
     } else if (!reg2.test(email.value)) {
         const emailErrorMessage = document.createElement('li');
-        errors.appendChild(emailErrorMessage);
         emailErrorMessage.innerText = 'Podano błędny adres email!';
+        errors.appendChild(emailErrorMessage);
     };
 };
 
@@ -265,9 +278,13 @@ function deleteExcursionFromBasket() {
         'click',
         function (e) {
             e.preventDefault();
+            e.stopPropagation();
             const target = e.target.parentElement.parentElement;
+            const deleteButton = target.querySelector('.summary__btn-remove');
             const targetParent = target.parentElement;
-            targetParent.removeChild(target);
+            if (e.target === deleteButton) {
+                targetParent.removeChild(target);
+            };
             renderTotalBasketPrice();
         }
     );
