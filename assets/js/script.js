@@ -35,14 +35,7 @@ function loadFile(reader, container) {
     reader.addEventListener(
         "load",
         function () {
-            const excursionsPanel = document.querySelector('.panel__excursions');
-            if (excursionsPanel.children.length > 1) {
-                if (excursionsPanel.lastChild) {
-                    while (excursionsPanel.lastChild && excursionsPanel.lastChild.className != 'excursions__item excursions__item--prototype') {
-                        excursionsPanel.removeChild(excursionsPanel.lastChild);
-                    };
-                };
-            }
+            clearExcursionPanel();
             const readerContent = Array.from(reader.result.split(/[\r\n]+/gm));
             const excursions = readerContent.map(function (el) {
                 return el.split(/"?,?"/).slice(1, 6);
@@ -50,7 +43,6 @@ function loadFile(reader, container) {
             excursions.forEach(function (excursion) {
                 renderExcursion(container, excursion);
             });
-            console.log(excursionsPanel.lastChild);
         }
     );
 
@@ -217,6 +209,10 @@ function order() {
             if (errors.children.length < 1) {
                 alert('Dziękujemy za złożenie zamówienia o wartości ' + totalPrice + '. Szczegóły zamówienia zostały wysłane na adres e-mail: ' + email + '.');
                 clearOrderForm(target);
+                clearExcursionPanel();
+                clearExcursionFromBasket();
+                const totalPriceItem = document.querySelector('.order__total-price-value');
+                totalPriceItem.innerText = '0 PLN'
             };
         }
     );
@@ -275,4 +271,24 @@ function deleteExcursionFromBasket() {
             renderTotalBasketPrice();
         }
     );
+};
+
+function clearExcursionPanel() {
+    const excursionsPanel = document.querySelector('.panel__excursions');
+    if (excursionsPanel.children.length > 1) {
+        if (excursionsPanel.lastChild) {
+            while (excursionsPanel.lastChild && excursionsPanel.lastChild.className != 'excursions__item excursions__item--prototype') {
+                excursionsPanel.removeChild(excursionsPanel.lastChild);
+            };
+        };
+    };
+};
+
+function clearExcursionFromBasket() {
+    const basket = document.querySelector('.panel__summary');
+    if (basket) {
+        while (basket.lastChild && basket.lastChild.className != 'summary__item summary__item--prototype') {
+            basket.removeChild(basket.lastChild);
+        };
+    };
 };
