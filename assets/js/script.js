@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', init);
 function init() {
     const inputField = document.querySelector('.uploader__input');
     const totalPriceItem = document.querySelector('.order__total-price-value');
+    const orderPanel = document.querySelector('.panel__order ');
     totalPriceItem.innerText = '0 PLN';
 
     if (inputField) {
@@ -12,6 +13,8 @@ function init() {
         );
     };
     addToOrder();
+    order()
+    renderErrorMessages(orderPanel);
 };
 
 function previewFileContent() {
@@ -51,10 +54,8 @@ function renderExcursion(container, excursion) {
     const priceForAdult = excursionsPrice.querySelectorAll('span')[0];
     const priceForChild = excursionsPrice.querySelectorAll('span')[1];
     const errorMessagesContainer = document.createElement('div');
-    const errorMessages = document.createElement('ul');
-    errorMessages.className = 'errors';
+    renderErrorMessages(errorMessagesContainer)
     li.appendChild(errorMessagesContainer);
-    errorMessagesContainer.appendChild(errorMessages);
     li.classList.remove('excursions__item--prototype');
     priceForAdult.classList.add('excursions__price--adult');
     priceForChild.classList.add('excursions__price--child');
@@ -171,7 +172,74 @@ function validateNumbersOfParticipants(form) {
 };
 
 function clearErrorMessages(errors) {
-    while (errors.firstChild) {
-        errors.removeChild(errors.firstChild);
+    if (errors) {
+        while (errors.firstChild) {
+            errors.removeChild(errors.firstChild);
+        };
     };
+};
+
+function order() {
+    const orderSubmitButton = document.querySelector('.panel__form');
+    orderSubmitButton.addEventListener(
+        'submit',
+        function (e) {
+            e.preventDefault();
+            const target = e.target;
+            const errors = target.querySelector('.errors');
+            const totalPrice = target.querySelector('.order__total-price-value').innerText;
+            const email = target.querySelector('input[name=email]').value;
+
+            console.log(totalPrice);
+            console.log(email);
+
+            clearErrorMessages(errors);
+            validateDataBeforeOrdering();
+            if (errors.children.length < 1) {
+                alert('Dziękujemy za złożenie zamówienia o wartości ' + totalPrice + '. Szczegóły zamówienia zostały wysłane na adres e-mail: ' + email + '.');
+                clearOrderForm(target);
+            };
+        }
+    );
+};
+
+function validateDataBeforeOrdering() {
+    const regForName = /^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$/;
+    const regFOrEmail = /\S+@\S+\.\S+/;
+    const reg1 = new RegExp(regForName);
+    const reg2 = new RegExp(regFOrEmail);
+    const name = document.querySelector('input[name=name]');
+    const email = document.querySelector('input[name=email]');
+    const errors = name.parentElement.parentElement.parentElement.querySelector('.errors');
+
+    if (name.value === '') {
+        const errorEmptyNameField = document.createElement('li');
+        errors.appendChild(errorEmptyNameField);
+        errorEmptyNameField.innerText = 'Nie wypełniono pola "Imię i nazwisko"!';
+    } else if (!reg1.test(name.value)) {
+        const nameErrorMessage = document.createElement('li');
+        errors.appendChild(nameErrorMessage);
+        nameErrorMessage.innerText = 'Podano błędne dane w polu "Imię i nazwisko"!';
+    };
+
+    if (email.value === '') {
+        const errorEmptyEmailField = document.createElement('li');
+        errors.appendChild(errorEmptyEmailField);
+        errorEmptyEmailField.innerText = 'Nie wypełniono pola "Email"!';
+    } else if (!reg2.test(email.value)) {
+        const emailErrorMessage = document.createElement('li');
+        errors.appendChild(emailErrorMessage);
+        emailErrorMessage.innerText = 'Podano błędny adres email!';
+    };
+};
+
+function renderErrorMessages(container) {
+    const errors = document.createElement('ul');
+    errors.className = 'errors';
+    container.appendChild(errors)
+};
+
+function clearOrderForm (form){
+    form.querySelector('input[name=name]').value = '';
+    form.querySelector('input[name=email]').value = '';
 };
