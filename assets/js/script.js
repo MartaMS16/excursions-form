@@ -111,7 +111,6 @@ function renderTotalBasketPrice() {
         if (el.parentElement.parentElement.className != 'summary__item summary__item--prototype') {
             const price = Number(el.innerText.slice(0, -4));
             prices.push(price);
-            console.log(prices);
         };
     });
 
@@ -139,7 +138,7 @@ function addToOrder() {
             const target = e.target;
             const errors = target.parentElement.querySelector('.errors');
             clearErrorMessages(errors);
-            validate(target);
+            validateNumbersOfParticipants(target);
             if (errors.children.length < 1) {
                 renderBasket(target);
                 renderTotalBasketPrice();
@@ -154,18 +153,20 @@ function clearExcursionForm(excursion) {
     excursion.querySelector('input[name=children]').value = '';
 };
 
-function validate(form) {
-    const numberOfAdults = Number(form.querySelector('input[name=adults]'));
-    const numberOfChildren = Number(form.querySelector('input[name=children]'));
-    const excursion = form.parentElement;
+function validateNumbersOfParticipants(form) {
+    const numberOfAdults = Number(form.querySelector('input[name=adults]').value);
+    const numberOfChildren = Number(form.querySelector('input[name=children]').value);
     const errorMessages = document.querySelector('.errors');
 
-    if (numberOfAdults.value < 0) {
-        const errorMessage = document.createElement('li');
-        errorMessages.appendChild(errorMessage);
-        errorMessage.innerText = 'Liczba osób dorosłych jest nieprawidłowa!';
-    } else if (Number.isNaN(numberOfAdults)) {
-        numberOfAdults.value = 0;
+    if (numberOfAdults < 0) {
+        const adultsErrorMessage = document.createElement('li');
+        errorMessages.appendChild(adultsErrorMessage);
+        adultsErrorMessage.innerText = 'Liczba osób dorosłych jest nieprawidłowa!';
+    };
+    if (numberOfChildren < 0) {
+        const childrenErrorMessage = document.createElement('li');
+        errorMessages.appendChild(childrenErrorMessage);
+        childrenErrorMessage.innerText = 'Liczba dzieci jest nieprawidłowa!';
     };
 };
 
