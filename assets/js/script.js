@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     const inputField = document.querySelector('.uploader__input');
+    const totalPriceItem = document.querySelector('.order__total-price-value');
+    totalPriceItem.innerText = '0 PLN';
 
     if (inputField) {
         inputField.addEventListener(
@@ -66,8 +68,9 @@ function renderBasket(excursion) {
     const basketItemName = basketItem.querySelector('.summary__name');
     const basketItemSummaryTotalPrice = basketItem.querySelector('.summary__total-price');
     const basketItemSummaryPrices = basketItem.querySelector('.summary__prices');
-    const numberOfAdults = excursion.firstElementChild.lastElementChild.lastElementChild.value;
-    const numberOfChildren = excursion.children.value;
+    const totalPriceItem = document.querySelector('.order__total-price-value');
+    const numberOfAdults = excursion.querySelector('input[name=adults]').value;
+    const numberOfChildren = excursion.querySelector('input[name=children]').value;
     const priceForAdults = excursion.firstElementChild.firstElementChild.firstElementChild.innerText;
     const priceForChildren = excursion.children.previousElementSibling.innerText;
     const totalPriceForAdults = numberOfAdults * priceForAdults;
@@ -76,6 +79,7 @@ function renderBasket(excursion) {
 
     basketItemName.innerText = excursion.previousElementSibling.firstElementChild.innerText;
     basketItemSummaryTotalPrice.innerText = totalPrice + ' PLN';
+    totalPriceItem.innerText = totalPrice + ' PLN';
     basketItemSummaryPrices.innerText = 'dorośli: ' + numberOfAdults + ' x ' + totalPriceForAdults + ' PLN, dzieci: ' + numberOfChildren + ' x ' + totalPriceForChildren + ' PLN';
 
     basket.appendChild(basketItem);
@@ -97,6 +101,12 @@ function addToOrder() {
             e.preventDefault();
             const target = e.target;
             renderBasket(target);
+            clearExcursionForm(target);
         }
     );
+};
+
+function clearExcursionForm(excursion) {
+    excursion.querySelector('input[name=adults]').value = '';
+    excursion.querySelector('input[name=children]').value = '';
 };
