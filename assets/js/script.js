@@ -13,12 +13,17 @@ function init() {
         );
     };
     addToOrder();
-    order()
+    order();
     renderErrorMessages(orderPanel);
     deleteExcursionFromBasket();
 };
 
 function previewFileContent() {
+    const errorFileMessage = document.querySelector('.error-file');
+    if (errorFileMessage) {
+        errorFileMessage.innerText = '';
+    };
+
     const reader = new FileReader();
     const container = document.querySelector('.excursions');
     loadFile(reader, container);
@@ -30,6 +35,14 @@ function loadFile(reader, container) {
     reader.addEventListener(
         "load",
         function () {
+            const excursionsPanel = document.querySelector('.panel__excursions');
+            if (excursionsPanel.children.length > 1) {
+                if (excursionsPanel.lastChild) {
+                    while (excursionsPanel.lastChild && excursionsPanel.lastChild.className != 'excursions__item excursions__item--prototype') {
+                        excursionsPanel.removeChild(excursionsPanel.lastChild);
+                    };
+                };
+            }
             const readerContent = Array.from(reader.result.split(/[\r\n]+/gm));
             const excursions = readerContent.map(function (el) {
                 return el.split(/"?,?"/).slice(1, 6);
@@ -37,11 +50,18 @@ function loadFile(reader, container) {
             excursions.forEach(function (excursion) {
                 renderExcursion(container, excursion);
             });
+            console.log(excursionsPanel.lastChild);
         }
     );
 
-    if (file) {
+    if (file && file.type.includes('csv')) {
         reader.readAsText(file, 'UTF-8');
+    } else {
+        const panel = document.querySelector('.uploader');
+        const errorFileMessage = document.createElement('div');
+        errorFileMessage.innerText = 'Wybrany plik nie jest plikiem "csv"!';
+        errorFileMessage.classList.add('error', 'error-file');
+        panel.appendChild(errorFileMessage);
     };
 };
 
@@ -255,5 +275,4 @@ function deleteExcursionFromBasket() {
             renderTotalBasketPrice();
         }
     );
-
 };
