@@ -15,6 +15,7 @@ function init() {
     addToOrder();
     order()
     renderErrorMessages(orderPanel);
+    deleteExcursionFromBasket();
 };
 
 function previewFileContent() {
@@ -78,6 +79,7 @@ function renderBasket(form) {
     const basketItemPrototype = document.querySelector('.summary__item--prototype');
     const basketItem = basketItemPrototype.cloneNode(true);
     basketItem.classList.remove('summary__item--prototype');
+    basketItem.setAttribute('id', Math.floor(Math.random() * 101));
     const basketItemName = basketItem.querySelector('.summary__name');
     const basketItemSummaryTotalPrice = basketItem.querySelector('.summary__total-price');
     const basketItemSummaryPrices = basketItem.querySelector('.summary__prices');
@@ -190,9 +192,6 @@ function order() {
             const totalPrice = target.querySelector('.order__total-price-value').innerText;
             const email = target.querySelector('input[name=email]').value;
 
-            console.log(totalPrice);
-            console.log(email);
-
             clearErrorMessages(errors);
             validateDataBeforeOrdering();
             if (errors.children.length < 1) {
@@ -239,7 +238,22 @@ function renderErrorMessages(container) {
     container.appendChild(errors)
 };
 
-function clearOrderForm (form){
+function clearOrderForm(form) {
     form.querySelector('input[name=name]').value = '';
     form.querySelector('input[name=email]').value = '';
+};
+
+function deleteExcursionFromBasket() {
+    const basket = document.querySelector('.panel__summary');
+    basket.addEventListener(
+        'click',
+        function (e) {
+            e.preventDefault();
+            const target = e.target.parentElement.parentElement;
+            const targetParent = target.parentElement;
+            targetParent.removeChild(target);
+            renderTotalBasketPrice();
+        }
+    );
+
 };
