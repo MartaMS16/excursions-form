@@ -66,9 +66,7 @@ function renderExcursion(container, excursion) {
     const excursionsFieldInput = li.querySelectorAll('.excursions__field-input');
     const priceForAdult = excursionsPrice.querySelectorAll('span')[0];
     const priceForChild = excursionsPrice.querySelectorAll('span')[1];
-    const errorMessagesContainer = document.createElement('div');
-    renderErrorMessages(errorMessagesContainer)
-    li.appendChild(errorMessagesContainer);
+    renderErrorMessages(excursionsPrice);
     li.classList.remove('excursions__item--prototype');
     priceForAdult.classList.add('excursions__price--adult');
     priceForChild.classList.add('excursions__price--child');
@@ -151,10 +149,10 @@ function addToOrder() {
         function (e) {
             e.preventDefault();
             const target = e.target;
-            const errors = target.parentElement.querySelector('.errors');
+            const errors = target.querySelector('.errors');
             clearErrorMessages(errors);
             validateNumbersOfParticipants(target);
-            if (errors.children.length < 1) {
+            if (errors.children.length === 0) {
                 renderBasket(target);
                 renderTotalBasketPrice();
                 clearExcursionForm(target);
@@ -171,7 +169,7 @@ function clearExcursionForm(excursion) {
 function validateNumbersOfParticipants(form) {
     const numberOfAdults = Number(form.querySelector('input[name=adults]').value);
     const numberOfChildren = Number(form.querySelector('input[name=children]').value);
-    const errorMessages = document.querySelector('.errors');
+    const errorMessages = form.querySelector('.errors');
 
     if (numberOfAdults < 0) {
         const adultsErrorMessage = document.createElement('li');
