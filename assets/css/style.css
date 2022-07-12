@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;1,700&display=swap');
+
 * {
+    font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -16,16 +19,23 @@ ul {
 }
 
 .panel__excursions {
+    background-color: #dcf0fd;
     width: 70%;
+    border-radius: 5px 0 0 5px;
 }
 
 .excursions {
+    color: #2c3e50;
     display: flex;
     flex-wrap: wrap;
 }
 
+.excursions__field {
+    margin: 5px auto;
+}
+
 .excursions__item {
-    border: 1px solid #bbb;
+    border: 1px solid #bdc3c7;
     border-radius: 5px;
     margin: 10px;
     padding: 20px;
@@ -36,18 +46,139 @@ ul {
     display: none;
 }
 
+.excursions__field-input {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    max-width: 65px
+}
+
+.excursions__field-input.excursions__field-input--submit {
+    max-width: 500px;
+    text-transform: uppercase;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 15px auto;
+}
+
+.excursions__field-input.excursions__field-input--submit:hover {
+    background-color: #34495e;
+    cursor: pointer;
+}
+
+.excursions__title {
+    font-size: 1.8rem;
+}
+
+.excursions__description {
+    margin: 5px auto 15px;
+}
+
+input[type=number]:hover::after {
+    content: attr(data-tooltip);
+}
+
 .panel__form {
-    background-color: #f4f4f4;
+    background-color: #34495e;
+    color: #ecf0f1;
     padding: 20px;
     width: 30%;
+    border-radius: 0 5px 5px 0;
 }
 
 .uploader, .order {
     border-bottom: 1px solid #bbb;
     margin-bottom: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 15px;
+}
+
+.uploader__input {
+    margin: 10px auto;
+}
+
+input::file-selector-button {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    height: 25px;
+    color: #2c3e50;
+    margin-right: 10px;
+}
+
+input::file-selector-button:hover {
+    cursor: pointer;
 }
 
 .summary__item--prototype {
     display: none;
+}
+
+.errors {
+    color: #e75f50;
+}
+
+.order__total-price {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.order__field {
+    margin: 10px auto;
+}
+
+.order__field-name{
+    display: flex;
+    flex-direction: column;
+}
+
+.order__field-input {
+    padding: 5px;
+    margin: 5px 0;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    width: 250px;
+}
+
+.order__field-submit {
+    text-transform: uppercase;
+    background-color: #16a085;
+    border: 1px solid #2c3e50;
+    border-radius: 5px;
+    color: #ecf0f1;
+    font-weight: 500;
+    font-size: 1rem;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.order__field-submit:hover {
+    background-color: #1abc9c;
+    cursor: pointer;
+}
+
+.summary__item {
+    margin-bottom: 10px;
+}
+
+.summary__total-price{
+    padding: 0 5px;
+}
+
+.summary__btn-remove {
+    font-size: 1rem;
+    padding: 0.1rem 0.5rem;
+    text-decoration: none;
+    color: #ce3726;
+}
+
+.summary__btn-remove:hover{
+    background-color: #c0392b;
+    color: #ecf0f1;
+    border-radius: 50%;
 }

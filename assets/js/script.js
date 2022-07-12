@@ -36,6 +36,7 @@ function loadFile(reader, container) {
         "load",
         function () {
             clearExcursionPanel();
+            clearFileErrors();
             const readerContent = Array.from(reader.result.split(/[\r\n]+/gm));
             const excursions = readerContent.map(function (el) {
                 return el.split(/"?,?"/).slice(1, 6);
@@ -52,7 +53,7 @@ function loadFile(reader, container) {
         const panel = document.querySelector('.uploader');
         const errorFileMessage = document.createElement('div');
         errorFileMessage.innerText = 'Wybrany plik nie jest plikiem "csv"!';
-        errorFileMessage.classList.add('error', 'error-file');
+        errorFileMessage.classList.add('errors');
         panel.appendChild(errorFileMessage);
     };
 };
@@ -206,6 +207,7 @@ function order() {
 
             clearErrorMessages(errors);
             validateDataBeforeOrdering();
+            clearFileErrors();
 
             if (Array.from(panelSummary.children).length < 2) {
                 console.log(Array.from(panelSummary.children));
@@ -305,5 +307,13 @@ function clearExcursionFromBasket() {
         while (basket.lastChild && basket.lastChild.className != 'summary__item summary__item--prototype') {
             basket.removeChild(basket.lastChild);
         };
+    };
+};
+
+function clearFileErrors() {
+    const uploader = document.querySelector('.uploader');
+    const uploaderErrors = uploader.querySelector('.errors');
+    if (uploaderErrors) {
+        uploaderErrors.innerText = '';
     };
 };
