@@ -57,11 +57,12 @@
             "order summary";
     }
 
-    .uploader {
-        padding: 10px;
+    .uploader, .order, .summary {
+        padding: 15px;
     }
 
     .order, .summary {
-        padding: 10px;
+        justify-self: center;
+        width: 100%;
     }
 }

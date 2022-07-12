@@ -1,0 +1,57 @@
+.panel__form {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "uploader"
+        "order"
+        "summary";
+    width: auto;
+    border-radius: 0;
+}
+
+.panel__excursions {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.excursions__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.excursions__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.excursions__description {
+    text-align: center;
+}
+
+.excursions__item.excursions__item--prototype{
+    display: none;
+}
+
+.uploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.uploader__label {
+    text-align: center;
+}
+
+.order {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
